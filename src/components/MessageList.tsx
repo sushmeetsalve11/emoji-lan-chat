@@ -19,11 +19,11 @@ const MessageList = ({ messages, currentUserNickname }: MessageListProps) => {
   }, [messages]);
   
   return (
-    <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
+    <div className="flex-1 p-6 overflow-y-auto bg-white/5 backdrop-blur-sm">
       <div className="space-y-4">
         {messages.length === 0 ? (
-          <div className="text-center text-gray-400 mt-10">
-            <p>No messages yet</p>
+          <div className="text-center text-white/60 mt-10 space-y-2">
+            <p className="text-lg font-medium">No messages yet</p>
             <p className="text-sm">Start chatting by typing a message below!</p>
           </div>
         ) : (
@@ -36,25 +36,25 @@ const MessageList = ({ messages, currentUserNickname }: MessageListProps) => {
                 className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}
               >
                 <div 
-                  className={`max-w-[80%] rounded-lg p-3 shadow-sm 
+                  className={`max-w-[80%] rounded-2xl p-4 shadow-md 
                     ${isCurrentUser 
-                      ? 'bg-blue-500 text-white rounded-br-none' 
-                      : 'bg-white text-gray-800 rounded-bl-none border border-gray-200'
+                      ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white rounded-br-none' 
+                      : 'bg-white/10 backdrop-blur-sm text-white rounded-bl-none'
                     }`}
                 >
                   <div className="flex items-center space-x-2 mb-1">
-                    <span className={`font-bold text-sm ${isCurrentUser ? 'text-blue-100' : 'text-blue-500'}`}>
+                    <span className={`font-medium text-sm ${isCurrentUser ? 'text-violet-200' : 'text-purple-200'}`}>
                       {message.sender}
                     </span>
-                    <span className={`text-xs ${isCurrentUser ? 'text-blue-200' : 'text-gray-400'}`}>
+                    <span className={`text-xs ${isCurrentUser ? 'text-violet-200/70' : 'text-white/50'}`}>
                       {new Date(message.timestamp).toLocaleTimeString()}
                     </span>
                   </div>
                   
-                  <p>{message.content}</p>
+                  <p className="leading-relaxed">{message.content}</p>
                   
                   {message.emoji && (
-                    <div className="text-lg mt-1">
+                    <div className="text-xl mt-2 opacity-90">
                       {message.emoji}
                     </div>
                   )}

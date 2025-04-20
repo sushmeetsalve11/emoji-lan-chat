@@ -19,9 +19,9 @@ const EmojiSuggestion = ({ emoji }: EmojiSuggestionProps) => {
   if (!emoji) return null;
   
   return (
-    <div className="flex items-center mt-2 mb-2 text-sm text-gray-600">
-      <span className="mr-2">Mood Suggestion:</span>
-      <div className={`text-2xl ${animate ? 'animate-bounce' : ''}`}>
+    <div className="flex items-center mt-3 mb-2 text-sm text-white/70">
+      <span className="mr-2 font-medium">Mood Suggestion:</span>
+      <div className={`text-2xl filter drop-shadow ${animate ? 'animate-bounce' : ''}`}>
         {emoji}
       </div>
     </div>

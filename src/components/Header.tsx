@@ -24,31 +24,36 @@ const Header = ({ currentUser, isConnected, onDisconnect, isServer }: HeaderProp
   }, [isConnected]);
   
   return (
-    <div className={`${isServer ? 'bg-gradient-to-r from-blue-600 to-blue-400' : 'bg-gradient-to-r from-green-600 to-green-400'} text-white p-4 rounded-t-lg shadow-md flex justify-between items-center`}>
-      <div className="flex items-center space-x-2">
-        <span className="text-2xl">💬</span>
-        <h1 className="text-xl font-bold">
-          {isServer ? 'Emoji LAN Chat (Server)' : 'Emoji LAN Chat (Client)'}
+    <div 
+      className={`${
+        isServer 
+          ? 'bg-gradient-to-r from-blue-600/90 to-blue-500/90' 
+          : 'bg-gradient-to-r from-emerald-600/90 to-emerald-500/90'
+      } backdrop-blur-lg text-white p-6 rounded-t-xl shadow-lg flex justify-between items-center`}
+    >
+      <div className="flex items-center space-x-3">
+        <span className="text-2xl filter drop-shadow-md">💬</span>
+        <h1 className="text-xl font-semibold tracking-tight">
+          {isServer ? 'Chat Server' : 'Chat Client'}
         </h1>
       </div>
       
-      <div className="flex items-center">
+      <div className="flex items-center gap-6">
         {currentUser && (
-          <div className="mr-4 font-medium">
-            User: {currentUser.nickname}
+          <div className="font-medium px-4 py-1.5 bg-white/10 rounded-full">
+            {currentUser.nickname}
           </div>
         )}
         
-        <div className="flex items-center space-x-2">
-          <span>Status: </span>
-          <span className={`font-bold ${statusClass}`}>{statusText}</span>
-          <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
+        <div className="flex items-center gap-3">
+          <div className={`w-2.5 h-2.5 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-400'} shadow-lg`} />
+          <span className={`font-medium ${statusClass}`}>{statusText}</span>
         </div>
         
         {isConnected && (
           <button 
             onClick={onDisconnect}
-            className="ml-4 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition-colors"
+            className="px-4 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-red-100 rounded-full font-medium transition-colors duration-200"
           >
             Disconnect
           </button>
