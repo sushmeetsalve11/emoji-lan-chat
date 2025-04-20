@@ -119,7 +119,7 @@ const ChatWindow = () => {
   };
   
   return (
-    <div className={`flex flex-col h-screen max-w-4xl mx-auto shadow-lg border border-gray-200 rounded-lg overflow-hidden ${state.isServer ? 'bg-blue-50' : 'bg-green-50'}`}>
+    <div className={`flex flex-col h-screen max-w-4xl mx-auto shadow-lg border border-white/10 backdrop-blur-md bg-white/5 rounded-lg overflow-hidden ${state.isServer ? 'bg-blue-950/10' : 'bg-emerald-950/10'}`}>
       <Header 
         currentUser={state.currentUser} 
         isConnected={state.isConnected}
@@ -145,11 +145,8 @@ const ChatWindow = () => {
       <ConnectionDialog 
         isOpen={showConnectionDialog}
         onClose={() => {
-          if (!state.isConnected) {
-            setShowConnectionDialog(true);
-          } else {
-            setShowConnectionDialog(false);
-          }
+          // Allow closing the dialog even if not connected
+          setShowConnectionDialog(false);
         }}
         onConnect={handleConnect}
         isChatFull={MockConnection.getInstance().isChatFull()}

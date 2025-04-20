@@ -34,8 +34,8 @@ const ConnectionDialog = ({ isOpen, onClose, onConnect, isChatFull }: Connection
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 animate-in fade-in-50 zoom-in-95">
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="bg-white/90 backdrop-blur-md rounded-lg shadow-lg w-full max-w-md p-6 animate-in fade-in-50 zoom-in-95 border border-white/20">
           <h2 className="text-xl font-bold mb-4">Connect to Chat</h2>
           
           {isChatFull && !isServer && (
@@ -70,7 +70,7 @@ const ConnectionDialog = ({ isOpen, onClose, onConnect, isChatFull }: Connection
               <Label htmlFor="isServer">Host the chat (be the server)</Label>
             </div>
             
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-gray-600">
               <p>💡 <strong>How to connect:</strong></p>
               <p>1. One person should check "Host the chat" to start the server</p>
               <p>2. The other person can connect as a client</p>
@@ -78,9 +78,9 @@ const ConnectionDialog = ({ isOpen, onClose, onConnect, isChatFull }: Connection
             </div>
           </div>
           
-          <div className="flex justify-end space-x-2 mt-6">
+          <div className="flex justify-between space-x-2 mt-6">
             <Button variant="outline" onClick={onClose}>
-              Cancel
+              Skip for now
             </Button>
             <Button onClick={handleConnect}>
               Connect
