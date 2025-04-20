@@ -7,83 +7,19 @@ import MessageInput from './MessageInput';
 import EmojiSuggestion from './EmojiSuggestion';
 import ConnectionDialog from './ConnectionDialog';
 import { Message, User, ChatState } from '../types';
-
-// For demo purposes, we'll simulate the server/client communication
-class MockConnection {
-  private static instance: MockConnection;
-  private callbacks: Array<(message: Message) => void> = [];
-  private users: User[] = [];
-  private isConnected = false;
-
-  private constructor() {}
-
-  public static getInstance(): MockConnection {
-    if (!MockConnection.instance) {
-      MockConnection.instance = new MockConnection();
-    }
-    return MockConnection.instance;
-  }
-
-  public connect(user: User, isServer: boolean): void {
-    this.isConnected = true;
-    this.users.push(user);
-    
-    // Simulate a join message
-    const joinMessage: Message = {
-      id: uuidv4(),
-      sender: 'System',
-      content: `${user.nickname} has joined the chat`,
-      timestamp: Date.now(),
-      emoji: '👋'
-    };
-    
-    setTimeout(() => {
-      this.broadcast(joinMessage);
-    }, 500);
-  }
-
-  public disconnect(user: User): void {
-    this.isConnected = false;
-    this.users = this.users.filter(u => u.id !== user.id);
-    
-    // Simulate a leave message
-    const leaveMessage: Message = {
-      id: uuidv4(),
-      sender: 'System',
-      content: `${user.nickname} has left the chat`,
-      timestamp: Date.now(),
-      emoji: '👋'
-    };
-    
-    setTimeout(() => {
-      this.broadcast(leaveMessage);
-    }, 500);
-  }
-
-  public sendMessage(message: Message): void {
-    if (this.isConnected) {
-      setTimeout(() => {
-        this.broadcast(message);
-      }, 100);
-    }
-  }
-
-  public onMessageReceived(callback: (message: Message) => void): void {
-    this.callbacks.push(callback);
-  }
-
-  private broadcast(message: Message): void {
-    this.callbacks.forEach(callback => callback(message));
-  }
-}
+import { MockConnection } from '../utils/MockConnection';
+import { useToast } from "@/components/ui/use-toast";
 
 const ChatWindow = () => {
+  const { toast } = useToast();
   const [state, setState] = useState<ChatState>({
     messages: [],
     users: [],
     currentUser: null,
     isConnected: false,
-    suggestedEmoji: ''
+    suggestedEmoji: '',
+    isChatFull: false,
+    isServer: false
   });
   
   const [showConnectionDialog, setShowConnectionDialog] = useState(true);
@@ -97,25 +33,53 @@ const ChatWindow = () => {
         messages: [...prevState.messages, message]
       }));
     });
+
+    // Check if chat is already full
+    if (connection.isChatFull()) {
+      setState(prevState => ({
+        ...prevState,
+        isChatFull: true
+      }));
+    }
   }, []);
   
   const handleConnect = (nickname: string, isServer: boolean) => {
+    const connection = MockConnection.getInstance();
+    
+    // Check if max users reached
+    if (connection.getUserCount() >= 2 && !isServer) {
+      toast({
+        title: "Connection Failed",
+        description: "The chat room is full (max 2 users). Please try again later.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     const newUser: User = {
       id: uuidv4(),
       nickname,
       isConnected: true
     };
     
-    setState(prevState => ({
-      ...prevState,
-      currentUser: newUser,
-      isConnected: true
-    }));
+    const connected = connection.connect(newUser, isServer);
     
-    const connection = MockConnection.getInstance();
-    connection.connect(newUser, isServer);
-    
-    setShowConnectionDialog(false);
+    if (connected) {
+      setState(prevState => ({
+        ...prevState,
+        currentUser: newUser,
+        isConnected: true,
+        isServer: isServer
+      }));
+      
+      setShowConnectionDialog(false);
+    } else {
+      toast({
+        title: "Connection Failed",
+        description: "The chat room is full (max 2 users). Please try again later.",
+        variant: "destructive"
+      });
+    }
   };
   
   const handleDisconnect = () => {
@@ -155,11 +119,12 @@ const ChatWindow = () => {
   };
   
   return (
-    <div className="flex flex-col h-screen max-w-4xl mx-auto shadow-lg border border-gray-200 rounded-lg overflow-hidden">
+    <div className={`flex flex-col h-screen max-w-4xl mx-auto shadow-lg border border-gray-200 rounded-lg overflow-hidden ${state.isServer ? 'bg-blue-50' : 'bg-green-50'}`}>
       <Header 
         currentUser={state.currentUser} 
         isConnected={state.isConnected}
         onDisconnect={handleDisconnect}
+        isServer={state.isServer}
       />
       
       <MessageList 
@@ -187,6 +152,7 @@ const ChatWindow = () => {
           }
         }}
         onConnect={handleConnect}
+        isChatFull={MockConnection.getInstance().isChatFull()}
       />
     </div>
   );

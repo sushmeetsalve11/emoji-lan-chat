@@ -9,9 +9,10 @@ interface ConnectionDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onConnect: (nickname: string, isServer: boolean) => void;
+  isChatFull: boolean;
 }
 
-const ConnectionDialog = ({ isOpen, onClose, onConnect }: ConnectionDialogProps) => {
+const ConnectionDialog = ({ isOpen, onClose, onConnect, isChatFull }: ConnectionDialogProps) => {
   const [nickname, setNickname] = useState('');
   const [isServer, setIsServer] = useState(false);
   const [error, setError] = useState('');
@@ -19,6 +20,11 @@ const ConnectionDialog = ({ isOpen, onClose, onConnect }: ConnectionDialogProps)
   const handleConnect = () => {
     if (!nickname.trim()) {
       setError('Please enter a nickname');
+      return;
+    }
+    
+    if (isChatFull && !isServer) {
+      setError('Chat room is full (max 2 users). You can only join as a host.');
       return;
     }
     
@@ -31,6 +37,13 @@ const ConnectionDialog = ({ isOpen, onClose, onConnect }: ConnectionDialogProps)
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
         <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 animate-in fade-in-50 zoom-in-95">
           <h2 className="text-xl font-bold mb-4">Connect to Chat</h2>
+          
+          {isChatFull && !isServer && (
+            <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+              <p className="font-bold">Chat room is full (max 2 users).</p>
+              <p>You can only join as a host or wait until someone disconnects.</p>
+            </div>
+          )}
           
           <div className="space-y-4">
             <div className="space-y-2">
@@ -60,8 +73,8 @@ const ConnectionDialog = ({ isOpen, onClose, onConnect }: ConnectionDialogProps)
             <div className="text-sm text-gray-500">
               <p>💡 <strong>How to connect:</strong></p>
               <p>1. One person should check "Host the chat" to start the server</p>
-              <p>2. Others can leave it unchecked to connect as clients</p>
-              <p>3. All users must be on the same local network</p>
+              <p>2. The other person can connect as a client</p>
+              <p>3. Currently limited to 2 users total</p>
             </div>
           </div>
           

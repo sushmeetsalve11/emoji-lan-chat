@@ -6,9 +6,10 @@ interface HeaderProps {
   currentUser: User | null;
   isConnected: boolean;
   onDisconnect: () => void;
+  isServer: boolean;
 }
 
-const Header = ({ currentUser, isConnected, onDisconnect }: HeaderProps) => {
+const Header = ({ currentUser, isConnected, onDisconnect, isServer }: HeaderProps) => {
   const [statusText, setStatusText] = useState('Disconnected');
   const [statusClass, setStatusClass] = useState('text-red-500');
   
@@ -23,10 +24,12 @@ const Header = ({ currentUser, isConnected, onDisconnect }: HeaderProps) => {
   }, [isConnected]);
   
   return (
-    <div className="bg-gradient-to-r from-blue-600 to-blue-400 text-white p-4 rounded-t-lg shadow-md flex justify-between items-center">
+    <div className={`${isServer ? 'bg-gradient-to-r from-blue-600 to-blue-400' : 'bg-gradient-to-r from-green-600 to-green-400'} text-white p-4 rounded-t-lg shadow-md flex justify-between items-center`}>
       <div className="flex items-center space-x-2">
         <span className="text-2xl">💬</span>
-        <h1 className="text-xl font-bold">Emoji LAN Chat</h1>
+        <h1 className="text-xl font-bold">
+          {isServer ? 'Emoji LAN Chat (Server)' : 'Emoji LAN Chat (Client)'}
+        </h1>
       </div>
       
       <div className="flex items-center">

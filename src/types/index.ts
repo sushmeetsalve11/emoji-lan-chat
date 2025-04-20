@@ -19,4 +19,6 @@ export interface ChatState {
   currentUser: User | null;
   isConnected: boolean;
   suggestedEmoji: string;
+  isChatFull: boolean;
+  isServer: boolean;
 }
